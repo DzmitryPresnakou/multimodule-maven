@@ -1,6 +1,6 @@
-package com.presnakov.hotelBooking;
+package com.presnakov.hotelbooking;
 
-import com.presnakov.hotelBooking.entity.Hotel;
+import com.presnakov.hotelbooking.entity.Hotel;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

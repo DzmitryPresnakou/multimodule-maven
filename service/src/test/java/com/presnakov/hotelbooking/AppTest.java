@@ -1,10 +1,10 @@
-package com.presnakov.hotelBooking.integration;
+package com.presnakov.hotelbooking;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ExampleIT {
+public class AppTest {
 
     @Test
     public void test() {

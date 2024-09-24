@@ -1,4 +1,4 @@
-package com.presnakov.hotelBooking.entity;
+package com.presnakov.hotelbooking.entity;
 
 public enum RoomClass {
     ECONOMY,

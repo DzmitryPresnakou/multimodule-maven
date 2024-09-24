@@ -1,6 +1,9 @@
-package com.presnakov.hotelBooking.entity;
+package com.presnakov.hotelbooking.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,16 +17,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "room", schema = "public")
+@Entity
+@Table(name = "room")
 public class Room {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
     private Integer occupancy;
-    @Column(name = "class")
+    @Column(name = "room_class")
+    @Enumerated(EnumType.STRING)
     private RoomClass roomClass;
     private String photo;
     @Column(name = "price_per_day")
     private Integer pricePerDay;
-    private Hotel hotel;
+//    private Hotel hotel;
+    private Integer hotel;
 }

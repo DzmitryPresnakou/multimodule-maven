@@ -1,4 +1,4 @@
-package com.presnakov.hotelBooking.entity;
+package com.presnakov.hotelbooking.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "users", schema = "public")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
