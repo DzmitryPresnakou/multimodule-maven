@@ -14,8 +14,8 @@
 
     <mapping class="com.presnakov.hotelbooking.entity.User"/>
     <mapping class="com.presnakov.hotelbooking.entity.Hotel"/>
-    <mapping class="com.presnakov.hotelbooking.entity.Order"/>
-    <mapping class="com.presnakov.hotelbooking.entity.Room"/>
+<!--    <mapping class="com.presnakov.hotelbooking.entity.Order"/>-->
+<!--    <mapping class="com.presnakov.hotelbooking.entity.Room"/>-->
 
   </session-factory>
 </hibernate-configuration>

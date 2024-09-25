@@ -1,6 +1,6 @@
 package com.presnakov.hotelbooking.entity;
 
-public enum RoomClass {
+public enum RoomClassEnum {
     ECONOMY,
     COMFORT,
     BUSINESS

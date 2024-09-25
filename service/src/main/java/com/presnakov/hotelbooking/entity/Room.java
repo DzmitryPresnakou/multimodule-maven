@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "room")
+//@Entity
+//@Table(name = "room")
 public class Room {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -26,10 +26,9 @@ public class Room {
     private Integer occupancy;
     @Column(name = "room_class")
     @Enumerated(EnumType.STRING)
-    private RoomClass roomClass;
+    private RoomClassEnum roomClass;
     private String photo;
     @Column(name = "price_per_day")
     private Integer pricePerDay;
-//    private Hotel hotel;
-    private Integer hotel;
+    private Hotel hotel;
 }

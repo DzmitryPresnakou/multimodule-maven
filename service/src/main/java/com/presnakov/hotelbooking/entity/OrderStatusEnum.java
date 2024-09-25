@@ -1,6 +1,6 @@
 package com.presnakov.hotelbooking.entity;
 
-public enum OrderStatus {
+public enum OrderStatusEnum {
     OPEN,
     CLOSED,
     APPROVED,

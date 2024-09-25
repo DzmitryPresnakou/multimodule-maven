@@ -1,6 +1,6 @@
 package com.presnakov.hotelbooking.entity;
 
-public enum PaymentStatus {
+public enum PaymentStatusEnum {
     APPROVED,
     DECLINED
 }
