@@ -18,14 +18,14 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-//@Entity
-//@Table(name = "room_order")
+@Entity
+@Table(name = "room_order")
 public class Order {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private User user;
-    private Room room;
+    private Integer userId;
+    private Integer roomId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatusEnum status;

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Hotel {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String photo;

@@ -1,21 +1,21 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE hibernate-configuration PUBLIC
-    "-//Hibernate/Hibernate Configuration DTD//EN"
-    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-  <session-factory>
-    <property name="connection.url">jdbc:postgresql://localhost:5432/hotel_repository</property>
-    <property name="connection.username">postgres</property>
-    <property name="connection.password">550563</property>
-    <property name="connection.driver_class">org.postgresql.Driver</property>
-    <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
-    <property name="show_sql">true</property>
-    <property name="format_sql">true</property>
+    <session-factory>
+        <property name="connection.url">jdbc:postgresql://localhost:5432/hotel_repository</property>
+        <property name="connection.username">postgres</property>
+        <property name="connection.password">550563</property>
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
 
-    <mapping class="com.presnakov.hotelbooking.entity.User"/>
-    <mapping class="com.presnakov.hotelbooking.entity.Hotel"/>
-<!--    <mapping class="com.presnakov.hotelbooking.entity.Order"/>-->
-<!--    <mapping class="com.presnakov.hotelbooking.entity.Room"/>-->
+        <mapping class="com.presnakov.hotelbooking.entity.User"/>
+        <mapping class="com.presnakov.hotelbooking.entity.Hotel"/>
+        <mapping class="com.presnakov.hotelbooking.entity.Order"/>
+        <mapping class="com.presnakov.hotelbooking.entity.Room"/>
 
-  </session-factory>
+    </session-factory>
 </hibernate-configuration>
