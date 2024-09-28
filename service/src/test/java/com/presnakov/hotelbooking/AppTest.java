@@ -1,5 +1,4 @@
-package com.dmdev;
-
+package com.presnakov.hotelbooking;
 
 import org.junit.jupiter.api.Test;
 
