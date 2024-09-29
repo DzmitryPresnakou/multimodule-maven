@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.DATABASE:hotel_repository</OriginalElement>
+  <nodes>
+    <node x="14.248402555910616" y="693.476677316294">c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.room_order</node>
+    <node x="98.74840255591062" y="271.0">c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.hotel</node>
+    <node x="276.99680511182123" y="449.1086261980831">c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.room</node>
+    <node x="-108.5" y="271.0">c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.users</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.room_order" target="c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.room" relationship="REFERENCES">
+      <point x="54.5" y="-105.0" />
+      <point x="177.74840255591062" y="663.9054313099042" />
+      <point x="363.99680511182123" y="663.9054313099042" />
+      <point x="0.0" y="93.0" />
+    </edge>
+    <edge source="c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.room_order" target="c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.users" relationship="REFERENCES">
+      <point x="-54.5" y="-105.0" />
+      <point x="68.74840255591062" y="663.9054313099042" />
+      <point x="-15.0" y="663.9054313099042" />
+      <point x="0.0" y="153.0" />
+    </edge>
+    <edge source="c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.room" target="c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.hotel" relationship="REFERENCES">
+      <point x="0.0" y="-93.0" />
+      <point x="363.99680511182123" y="237.85303514376997" />
+      <point x="177.74840255591062" y="237.85303514376997" />
+      <point x="0.0" y="57.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="1.1052259887005653" showDependencies="false" x="199.782108626198" y="558.0606230031943" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+

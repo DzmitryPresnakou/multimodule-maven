@@ -27,5 +27,5 @@ public class Room {
 
     private String photo;
     private Integer pricePerDay;
-    private Integer hotelId;
+    private Hotel hotel;
 }

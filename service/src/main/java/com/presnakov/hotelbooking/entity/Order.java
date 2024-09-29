@@ -24,8 +24,8 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer userId;
-    private Integer roomId;
+    private User user;
+    private Room room;
 
     @Enumerated(EnumType.STRING)
     private OrderStatusEnum status;
