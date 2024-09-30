@@ -30,24 +30,24 @@ public class HibernateRunner {
             session.beginTransaction();
 
             Hotel hotel = Hotel.builder()
-                    .name("Hilton3")
-                    .photo("hotelphoto03.jpg")
+                    .name("Minsk")
+                    .photo("hotelphoto007.jpg")
                     .build();
 
             Room room = Room.builder()
-                    .occupancy(4)
+                    .occupancy(5)
                     .roomClass(RoomClassEnum.ECONOMY)
-                    .photo("photoroom002.jpg")
-                    .pricePerDay(69)
+                    .photo("photoroom004.jpg")
+                    .pricePerDay(89)
                     .hotel(hotel)
                     .build();
 
             User user = User.builder()
-                    .firstName("Vasya")
-                    .lastName("Vasilyev")
-                    .email("vasya25@gmail.com")
+                    .firstName("Vanya")
+                    .lastName("Vanyev")
+                    .email("vanya66@gmail.com")
                     .phone("+375291534863")
-                    .photo("userphoto001.jpg")
+                    .photo("userphoto006.jpg")
                     .birthDate(LocalDate.of(1995, 10, 15))
                     .money(2500)
                     .password("12345")
@@ -64,9 +64,6 @@ public class HibernateRunner {
                     .checkOutDate(LocalDate.of(2024, 10, 25))
                     .build();
 
-            session.saveOrUpdate(hotel);
-            session.saveOrUpdate(room);
-            session.saveOrUpdate(user);
             session.saveOrUpdate(order);
 
             session.getTransaction().commit();
