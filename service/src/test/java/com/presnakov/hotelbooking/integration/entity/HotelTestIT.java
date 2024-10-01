@@ -3,80 +3,51 @@ package com.presnakov.hotelbooking.integration.entity;
 import com.presnakov.hotelbooking.entity.Hotel;
 import com.presnakov.hotelbooking.entity.Room;
 import com.presnakov.hotelbooking.entity.RoomClassEnum;
-import lombok.Cleanup;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
-import org.hibernate.cfg.Configuration;
+import com.presnakov.hotelbooking.integration.integration.EntityTestBase;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 
-public class HotelTestIT {
+public class HotelTestIT  extends EntityTestBase {
 
     @Test
-    void upsert() {
-        Configuration configuration = new Configuration();
-        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
-        configuration.configure();
-
-        @Cleanup SessionFactory sessionFactory = configuration.buildSessionFactory();
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
+    void createHotel() {
         Hotel hotel = getHotel();
 
-        session.save(hotel);
-        session.getTransaction().commit();
-
+        session.persist(hotel);
+        session.flush();
         Hotel actualResult = session.getReference(Hotel.class, hotel.getId());
 
         assertThat(actualResult.getId()).isEqualTo(hotel.getId());
     }
 
     @Test
-    void deleteRoomFromHotel() {
-        Configuration configuration = new Configuration();
-        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
-        configuration.configure();
-
-        @Cleanup SessionFactory sessionFactory = configuration.buildSessionFactory();
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
+    void updateHotel() {
         Hotel hotel = getHotel();
-        Room room = getRoom();
 
-        hotel.addRoom(room);
-
-        session.save(hotel);
-        session.getTransaction().commit();
-
+        session.persist(hotel);
+        hotel.setName("Europe");
+        hotel.setPhoto("hotelphoto12345.jpg");
+        session.merge(hotel);
+        session.flush();
         Hotel actualResult = session.getReference(Hotel.class, hotel.getId());
 
-        actualResult.getRooms().removeIf(actualRoom -> actualRoom.getId().equals(room.getId()));
-
-        assertThat(actualResult.getRooms().removeIf(actualRoom -> actualRoom.getId().equals(room.getId())));
+        assertAll(
+                () -> assertThat(actualResult.getName()).isEqualTo("Europe"),
+                () -> assertThat(actualResult.getPhoto()).isEqualTo("hotelphoto12345.jpg")
+        );
     }
 
     @Test
     void getHotelById() {
-        Configuration configuration = new Configuration();
-        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
-        configuration.configure();
-
-        @Cleanup SessionFactory sessionFactory = configuration.buildSessionFactory();
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
         Hotel hotel = getHotel();
 
-        session.save(hotel);
-        session.getTransaction().commit();
-
+        session.persist(hotel);
+        session.flush();
         Hotel actualResult = session.getReference(Hotel.class, hotel.getId());
 
         assertThat(actualResult.getId()).isEqualTo(hotel.getId());
@@ -84,47 +55,43 @@ public class HotelTestIT {
 
     @Test
     void deleteHotel() {
-        Configuration configuration = new Configuration();
-        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
-        configuration.configure();
-
-        @Cleanup SessionFactory sessionFactory = configuration.buildSessionFactory();
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
         Hotel hotel = getHotel();
 
-        session.save(hotel);
-        session.getTransaction().commit();
-
+        session.persist(hotel);
         Hotel actualResult = session.getReference(Hotel.class, hotel.getId());
-        session.delete(actualResult);
-
+        session.remove(actualResult);
         Optional<Hotel> deletedHotel = Optional.ofNullable(session.find(Hotel.class, hotel.getId()));
+
         assertThat(deletedHotel).isEmpty();
     }
 
     @Test
     void addRoomToNewHotel() {
-        Configuration configuration = new Configuration();
-        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
-        configuration.configure();
-
-        @Cleanup SessionFactory sessionFactory = configuration.buildSessionFactory();
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
         Hotel hotel = getHotel();
         Room room = getRoom();
         hotel.addRoom(room);
 
-        session.save(hotel);
-
+        session.persist(hotel);
         Hotel actualHotel = session.getReference(Hotel.class, hotel.getId());
         Room actualRoom = session.getReference(Room.class, room.getId());
+        session.flush();
 
         assertThat(actualHotel.getId()).isEqualTo(hotel.getId());
         assertThat(actualRoom.getId()).isEqualTo(room.getId());
+    }
+
+    @Test
+    void deleteRoomFromHotel() {
+        Hotel hotel = getHotel();
+        Room room = getRoom();
+        hotel.addRoom(room);
+
+        session.persist(hotel);
+        session.flush();
+        Hotel actualResult = session.getReference(Hotel.class, hotel.getId());
+        actualResult.getRooms().removeIf(actualRoom -> actualRoom.getId().equals(room.getId()));
+
+        assertThat(actualResult.getRooms().removeIf(actualRoom -> actualRoom.getId().equals(room.getId())));
     }
 
     private static Room getRoom() {
@@ -139,7 +106,7 @@ public class HotelTestIT {
     private static Hotel getHotel() {
         return Hotel.builder()
                 .photo("hotelphoto005.jpg")
-                .name("Bobruisk5")
+                .name("Bobruisk")
                 .build();
     }
 }
