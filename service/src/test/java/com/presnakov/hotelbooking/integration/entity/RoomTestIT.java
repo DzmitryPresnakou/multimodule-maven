@@ -15,9 +15,10 @@ public class RoomTestIT extends EntityTestBase {
     @Test
     void createRoom() {
         Room room = getRoom();
-
         session.persist(room);
         session.flush();
+        session.clear();
+
         Room actualResult = session.getReference(Room.class, room.getId());
 
         assertThat(actualResult.getId()).isEqualTo(room.getId());
@@ -26,7 +27,6 @@ public class RoomTestIT extends EntityTestBase {
     @Test
     void updateRoom() {
         Room room = getRoom();
-
         session.persist(room);
         room.setRoomClass(RoomClassEnum.COMFORT);
         room.setOccupancy(4);
@@ -34,6 +34,8 @@ public class RoomTestIT extends EntityTestBase {
         room.setPhoto("roomphoto007.jpg");
         session.merge(room);
         session.flush();
+        session.clear();
+
         Room actualResult = session.getReference(Room.class, room.getId());
 
         assertAll(
@@ -47,9 +49,10 @@ public class RoomTestIT extends EntityTestBase {
     @Test
     void getRoomById() {
         Room room = getRoom();
-
         session.persist(room);
         session.flush();
+        session.clear();
+
         Room actualResult = session.getReference(Room.class, room.getId());
 
         assertThat(actualResult.getId()).isEqualTo(room.getId());
@@ -58,10 +61,12 @@ public class RoomTestIT extends EntityTestBase {
     @Test
     void deleteRoom() {
         Room room = getRoom();
-
         session.persist(room);
         Room actualResult = session.getReference(Room.class, room.getId());
         session.remove(actualResult);
+        session.flush();
+        session.clear();
+
         Optional<Room> deletedRoom = Optional.ofNullable(session.find(Room.class, room.getId()));
 
         assertThat(deletedRoom).isEmpty();

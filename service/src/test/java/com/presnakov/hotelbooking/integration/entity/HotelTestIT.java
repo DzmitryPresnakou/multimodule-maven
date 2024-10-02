@@ -17,9 +17,10 @@ public class HotelTestIT extends EntityTestBase {
     @Test
     void createHotel() {
         Hotel hotel = getHotel();
-
         session.persist(hotel);
         session.flush();
+        session.clear();
+
         Hotel actualResult = session.getReference(Hotel.class, hotel.getId());
 
         assertThat(actualResult.getId()).isEqualTo(hotel.getId());
@@ -28,13 +29,14 @@ public class HotelTestIT extends EntityTestBase {
     @Test
     void updateHotel() {
         Hotel hotel = getHotel();
-
         session.persist(hotel);
         hotel.setName("Europe");
         hotel.setPhoto("hotelphoto12345.jpg");
         session.merge(hotel);
         session.flush();
-        Hotel actualResult = session.getReference(Hotel.class, hotel.getId());
+        session.clear();
+
+        Hotel actualResult = session.get(Hotel.class, hotel.getId());
 
         assertAll(
                 () -> assertThat(actualResult.getName()).isEqualTo("Europe"),
@@ -45,9 +47,10 @@ public class HotelTestIT extends EntityTestBase {
     @Test
     void getHotelById() {
         Hotel hotel = getHotel();
-
         session.persist(hotel);
         session.flush();
+        session.clear();
+
         Hotel actualResult = session.getReference(Hotel.class, hotel.getId());
 
         assertThat(actualResult.getId()).isEqualTo(hotel.getId());
@@ -56,10 +59,12 @@ public class HotelTestIT extends EntityTestBase {
     @Test
     void deleteHotel() {
         Hotel hotel = getHotel();
-
         session.persist(hotel);
         Hotel actualResult = session.getReference(Hotel.class, hotel.getId());
         session.remove(actualResult);
+        session.flush();
+        session.clear();
+
         Optional<Hotel> deletedHotel = Optional.ofNullable(session.find(Hotel.class, hotel.getId()));
 
         assertThat(deletedHotel).isEmpty();
@@ -70,14 +75,17 @@ public class HotelTestIT extends EntityTestBase {
         Hotel hotel = getHotel();
         Room room = getRoom();
         hotel.addRoom(room);
-
         session.persist(hotel);
+        session.flush();
+        session.clear();
+
         Hotel actualHotel = session.getReference(Hotel.class, hotel.getId());
         Room actualRoom = session.getReference(Room.class, room.getId());
-        session.flush();
 
-        assertThat(actualHotel.getId()).isEqualTo(hotel.getId());
-        assertThat(actualRoom.getId()).isEqualTo(room.getId());
+        assertAll(
+                () -> assertThat(actualHotel.getId()).isEqualTo(hotel.getId()),
+                () -> assertThat(actualRoom.getId()).isEqualTo(room.getId())
+        );
     }
 
     @Test
@@ -85,9 +93,10 @@ public class HotelTestIT extends EntityTestBase {
         Hotel hotel = getHotel();
         Room room = getRoom();
         hotel.addRoom(room);
-
         session.persist(hotel);
         session.flush();
+        session.clear();
+
         Hotel actualResult = session.getReference(Hotel.class, hotel.getId());
         actualResult.getRooms().removeIf(actualRoom -> actualRoom.getId().equals(room.getId()));
 

@@ -33,7 +33,6 @@ public abstract class EntityTestBase {
         }
         session = sessionFactory.openSession();
         session.beginTransaction();
-        session.clear();
     }
 
     @AfterEach

@@ -16,9 +16,10 @@ public class UserTestIT extends EntityTestBase {
     @Test
     void createUser() {
         User user = getUser();
-
         session.persist(user);
         session.flush();
+        session.clear();
+
         User actualResult = session.getReference(User.class, user.getId());
 
         assertThat(actualResult.getId()).isEqualTo(user.getId());
@@ -27,7 +28,6 @@ public class UserTestIT extends EntityTestBase {
     @Test
     void updateUser() {
         User user = getUser();
-
         session.persist(user);
         user.setFirstName("Kolya");
         user.setLastName("Petrov");
@@ -37,8 +37,11 @@ public class UserTestIT extends EntityTestBase {
         user.setMoney(5000);
         user.setPassword("963258");
         user.setRole(RoleEnum.ADMIN);
+        user.setIsActive(false);
         session.merge(user);
         session.flush();
+        session.clear();
+
         User actualResult = session.getReference(User.class, user.getId());
 
         assertAll(
@@ -49,16 +52,18 @@ public class UserTestIT extends EntityTestBase {
                 () -> assertThat(actualResult.getBirthDate().equals(LocalDate.of(1990, 11, 8))),
                 () -> assertThat(actualResult.getMoney().equals(5000)),
                 () -> assertThat(actualResult.getPassword().equals("963258")),
-                () -> assertThat(actualResult.getRole().equals(RoleEnum.ADMIN))
+                () -> assertThat(actualResult.getRole().equals(RoleEnum.ADMIN)),
+                () -> assertThat(actualResult.getIsActive().equals(false))
         );
     }
 
     @Test
     void getUserById() {
         User user = getUser();
-
         session.persist(user);
         session.flush();
+        session.clear();
+
         User actualResult = session.getReference(User.class, user.getId());
 
         assertThat(actualResult.getId()).isEqualTo(user.getId());
@@ -67,10 +72,12 @@ public class UserTestIT extends EntityTestBase {
     @Test
     void deleteUser() {
         User user = getUser();
-
         session.persist(user);
         User actualResult = session.getReference(User.class, user.getId());
         session.remove(actualResult);
+        session.flush();
+        session.clear();
+
         Optional<User> deletedRoom = Optional.ofNullable(session.find(User.class, user.getId()));
 
         assertThat(deletedRoom).isEmpty();
@@ -87,7 +94,6 @@ public class UserTestIT extends EntityTestBase {
                 .money(2500)
                 .password("12345")
                 .role(RoleEnum.USER)
-                .isActive(true)
                 .build();
     }
 }

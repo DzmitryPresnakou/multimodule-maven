@@ -22,8 +22,9 @@ public class OrderTestIT extends EntityTestBase {
     @Test
     void createOrder() {
         Order order = addOrderToSession();
-
         session.flush();
+        session.clear();
+
         Order actualResult = session.getReference(Order.class, order.getId());
 
         assertThat(actualResult.getId()).isEqualTo(order.getId());
@@ -32,13 +33,14 @@ public class OrderTestIT extends EntityTestBase {
     @Test
     void updateOrder() {
         Order order = addOrderToSession();
-
         order.setStatus(OrderStatusEnum.REJECTED);
         order.setPaymentStatus(PaymentStatusEnum.DECLINED);
         order.setCheckInDate(LocalDate.of(2025, 11, 10));
         order.setCheckOutDate(LocalDate.of(2025, 11, 15));
         session.merge(order);
         session.flush();
+        session.clear();
+
         Order actualResult = session.getReference(Order.class, order.getId());
 
         assertAll(
@@ -52,8 +54,9 @@ public class OrderTestIT extends EntityTestBase {
     @Test
     void getOrderById() {
         Order order = addOrderToSession();
-
         session.flush();
+        session.clear();
+
         Order actualResult = session.getReference(Order.class, order.getId());
 
         assertThat(actualResult.getId()).isEqualTo(order.getId());
@@ -62,9 +65,11 @@ public class OrderTestIT extends EntityTestBase {
     @Test
     void deleteOrder() {
         Order order = addOrderToSession();
-
         Order actualResult = session.getReference(Order.class, order.getId());
         session.remove(actualResult);
+        session.flush();
+        session.clear();
+
         Optional<Order> deletedOrder = Optional.ofNullable(session.find(Order.class, order.getId()));
 
         assertThat(deletedOrder).isEmpty();

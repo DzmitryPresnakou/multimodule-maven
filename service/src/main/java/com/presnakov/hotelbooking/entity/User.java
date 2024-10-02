@@ -44,7 +44,9 @@ public class User {
     private String photo;
     private Integer money;
     private LocalDate birthDate;
-    private Boolean isActive;
+
+    @Builder.Default
+    private Boolean isActive = true;
 
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
