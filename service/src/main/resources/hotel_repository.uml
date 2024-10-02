@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.DATABASE:hotel_repository</OriginalElement>
+  <nodes>
+    <node x="-64.0" y="679.0">c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.room_order</node>
+    <node x="-96.01702127659576" y="275.18936170212766">c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.hotel</node>
+    <node x="202.1553191489362" y="386.54680851063824">c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.room</node>
+    <node x="-350.2744680851063" y="292.4659574468086">c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.users</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.room_order" target="c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.room" relationship="REFERENCES">
+      <point x="54.5" y="-105.0" />
+      <point x="99.5" y="644.0" />
+      <point x="289.1553191489362" y="644.0" />
+      <point x="0.0" y="93.0" />
+    </edge>
+    <edge source="c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.room_order" target="c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.users" relationship="REFERENCES">
+      <point x="-54.5" y="-105.0" />
+      <point x="-9.5" y="644.0" />
+      <point x="-256.7744680851063" y="644.0" />
+      <point x="0.0" y="153.0" />
+    </edge>
+    <edge source="c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.room" target="c3cdd041-06d7-44bd-aa23-5d1a6a289b9f.TABLE:hotel_repository.public.hotel" relationship="REFERENCES">
+      <point x="0.0" y="-93.0" />
+      <point x="289.1553191489362" y="229.6978723404255" />
+      <point x="-17.017021276595756" y="229.6978723404255" />
+      <point x="0.0" y="57.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="1.1064030131826743" showDependencies="false" x="49.4226329787233" y="531.3601329787232" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+
