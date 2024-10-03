@@ -1,14 +1,6 @@
-package com.presnakov.hotelbooking.integration.entity;
+package com.presnakov.hotelbooking.entity;
 
-import com.presnakov.hotelbooking.entity.Hotel;
-import com.presnakov.hotelbooking.entity.Order;
-import com.presnakov.hotelbooking.entity.OrderStatusEnum;
-import com.presnakov.hotelbooking.entity.PaymentStatusEnum;
-import com.presnakov.hotelbooking.entity.RoleEnum;
-import com.presnakov.hotelbooking.entity.Room;
-import com.presnakov.hotelbooking.entity.RoomClassEnum;
-import com.presnakov.hotelbooking.entity.User;
-import com.presnakov.hotelbooking.integration.integration.EntityTestBase;
+import com.presnakov.hotelbooking.integration.EntityTestBase;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

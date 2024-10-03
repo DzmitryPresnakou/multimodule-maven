@@ -1,9 +1,6 @@
-package com.presnakov.hotelbooking.integration.entity;
+package com.presnakov.hotelbooking.entity;
 
-import com.presnakov.hotelbooking.entity.Hotel;
-import com.presnakov.hotelbooking.entity.Room;
-import com.presnakov.hotelbooking.entity.RoomClassEnum;
-import com.presnakov.hotelbooking.integration.integration.EntityTestBase;
+import com.presnakov.hotelbooking.integration.EntityTestBase;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.presnakov.hotelbooking.integration;
+package com.presnakov.hotelbooking;
 
 import org.junit.jupiter.api.Test;
 
