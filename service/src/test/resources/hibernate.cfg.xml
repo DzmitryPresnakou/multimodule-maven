@@ -9,7 +9,7 @@
         <property name="show_sql">true</property>
         <property name="format_sql">true</property>
         <!-- DB schema will be updated if needed -->
-        <property name="hibernate.hbm2ddl.auto">create</property>
+        <property name="hibernate.hbm2ddl.auto">create-drop</property>
 
         <mapping class="com.presnakov.hotelbooking.entity.User"/>
         <mapping class="com.presnakov.hotelbooking.entity.Hotel"/>
