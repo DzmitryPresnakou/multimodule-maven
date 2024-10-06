@@ -1,15 +1,70 @@
 package com.presnakov.hotelbooking.entity;
 
 import com.presnakov.hotelbooking.integration.EntityTestBase;
+import com.presnakov.hotelbooking.util.TestDataImporter;
+import lombok.Cleanup;
+import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class OrderTestIT extends EntityTestBase {
+
+    @Test
+    void findOrderByUserEmail() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        String userEmail = "vasya@gmai.com";
+
+        List<Order> results = session.createQuery("select o from Order o " +
+                                                  "join o.user u " +
+                                                  "where u.email = :email", Order.class)
+                .setParameter("email", userEmail)
+                .list();
+
+        assertThat(results).hasSize(1);
+        session.getTransaction().commit();
+    }
+
+    @Test
+    void findAllOrdersByHotelName() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        String hotelName = "Minsk";
+
+        List<Order> results = session.createQuery("select o from Order o " +
+                                                  "join o.room r " +
+                                                  "join r.hotel h " +
+                                                  "where h.name = :hotelName", Order.class)
+                .setParameter("hotelName", hotelName)
+                .list();
+
+        assertThat(results).hasSize(2);
+        session.getTransaction().commit();
+    }
+
+    @Test
+    void findOrdersByCheckInDate() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        LocalDate checkInDate = LocalDate.of(2024, 10, 20);
+
+        List<Order> results = session.createQuery("select o from Order o " +
+                                                  "where o.checkInDate = :checkInDate", Order.class)
+                .setParameter("checkInDate", checkInDate)
+                .list();
+
+        assertThat(results).hasSize(1);
+        session.getTransaction().commit();
+    }
 
     @Test
     void createOrder() {
@@ -95,7 +150,7 @@ public class OrderTestIT extends EntityTestBase {
                 .money(2500)
                 .password("12345")
                 .role(RoleEnum.USER)
-                .isActive(true)
+//                .isActive(true)
                 .build();
     }
 

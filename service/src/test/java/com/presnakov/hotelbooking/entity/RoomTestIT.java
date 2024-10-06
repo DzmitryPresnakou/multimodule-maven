@@ -1,14 +1,44 @@
 package com.presnakov.hotelbooking.entity;
 
 import com.presnakov.hotelbooking.integration.EntityTestBase;
+import com.presnakov.hotelbooking.util.TestDataImporter;
+import lombok.Cleanup;
+import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class RoomTestIT extends EntityTestBase {
+
+    @Test
+    void findAllByHotelNameClassOccupancyPrice() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        String hotelName = "Plaza";
+        Integer occupancy = 2;
+        Integer pricePerDay = 29;
+        RoomClassEnum comfortClass = RoomClassEnum.ECONOMY;
+
+        List<Room> results = session.createQuery("select r from Hotel h " +
+                                                 "join h.rooms r " +
+                                                 "where h.name = :hotelName " +
+                                                 "and r.roomClass = :comfortClass " +
+                                                 "and r.occupancy = :occupancy " +
+                                                 "and r.pricePerDay = :pricePerDay", Room.class)
+                .setParameter("hotelName", hotelName)
+                .setParameter("comfortClass", comfortClass)
+                .setParameter("occupancy", occupancy)
+                .setParameter("pricePerDay", pricePerDay)
+                .list();
+
+        assertThat(results).hasSize(1);
+        session.getTransaction().commit();
+    }
 
     @Test
     void createRoom() {
