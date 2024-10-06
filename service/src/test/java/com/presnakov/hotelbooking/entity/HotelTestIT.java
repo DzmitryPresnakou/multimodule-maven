@@ -21,7 +21,6 @@ public class HotelTestIT extends EntityTestBase {
         session.beginTransaction();
         TestDataImporter.importData(session);
 
-
         List<Hotel> results = session.createQuery("select h from Hotel h", Hotel.class)
                 .list();
         List<String> hotelNames = results.stream()
@@ -30,6 +29,47 @@ public class HotelTestIT extends EntityTestBase {
 
         assertThat(results).hasSize(2);
         assertThat(hotelNames).containsExactlyInAnyOrder("Plaza", "Minsk");
+        session.getTransaction().commit();
+    }
+
+    @Test
+    void findAllCriteria() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        var cb = session.getCriteriaBuilder();
+        var criteria = cb.createQuery(Hotel.class);
+
+        var hotel = criteria.from(Hotel.class);
+        criteria.select(hotel);
+        List<Hotel> results = session.createQuery(criteria)
+                .list();
+        List<String> hotelNames = results.stream()
+                .map(Hotel::getName)
+                .collect(toList());
+
+        assertThat(results).hasSize(2);
+        assertThat(hotelNames).containsExactlyInAnyOrder("Plaza", "Minsk");
+        session.getTransaction().commit();
+    }
+
+    @Test
+    void findByNameCriteria() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        var cb = session.getCriteriaBuilder();
+        var criteria = cb.createQuery(Hotel.class);
+        String hotelName = "Plaza";
+        var hotel = criteria.from(Hotel.class);
+
+        criteria.select(hotel).where(
+                cb.equal(hotel.get("name"), hotelName));
+        Optional<Hotel> actualResult = session.createQuery(criteria)
+                .uniqueResultOptional();
+
+        assertThat(actualResult.isPresent()).isTrue();
+        assertThat(actualResult.get().getName()).isEqualTo(hotelName);
         session.getTransaction().commit();
     }
 

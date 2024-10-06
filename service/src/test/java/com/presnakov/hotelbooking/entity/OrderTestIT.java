@@ -24,7 +24,7 @@ public class OrderTestIT extends EntityTestBase {
 
         List<Order> results = session.createQuery("select o from Order o " +
                                                   "join o.user u " +
-                                                  "where u.email = :email", Order.class)
+                                                  "where u.email = :email ", Order.class)
                 .setParameter("email", userEmail)
                 .list();
 
