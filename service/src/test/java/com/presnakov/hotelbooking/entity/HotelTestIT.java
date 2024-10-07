@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class HotelTestIT extends EntityTestBase {
 
+    //test with HQL
     @Test
     void findAll() {
         @Cleanup Session session = sessionFactory.openSession();
@@ -32,6 +33,24 @@ public class HotelTestIT extends EntityTestBase {
         session.getTransaction().commit();
     }
 
+    //test with HQL
+    @Test
+    void findByName() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+
+        String hotelName = "Plaza";
+        Optional<Hotel> actualResult = session.createQuery("select h from Hotel h " +
+                                                           "where h.name = :name", Hotel.class)
+                .setParameter("name", hotelName)
+                .uniqueResultOptional();
+        assertThat(actualResult.isPresent()).isTrue();
+        assertThat(actualResult.get().getName()).isEqualTo(hotelName);
+        session.getTransaction().commit();
+    }
+
+    //test with Criteria
     @Test
     void findAllCriteria() {
         @Cleanup Session session = sessionFactory.openSession();
@@ -53,6 +72,7 @@ public class HotelTestIT extends EntityTestBase {
         session.getTransaction().commit();
     }
 
+    //test with Criteria
     @Test
     void findByNameCriteria() {
         @Cleanup Session session = sessionFactory.openSession();
@@ -68,22 +88,6 @@ public class HotelTestIT extends EntityTestBase {
         Optional<Hotel> actualResult = session.createQuery(criteria)
                 .uniqueResultOptional();
 
-        assertThat(actualResult.isPresent()).isTrue();
-        assertThat(actualResult.get().getName()).isEqualTo(hotelName);
-        session.getTransaction().commit();
-    }
-
-    @Test
-    void findByName() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        TestDataImporter.importData(session);
-
-        String hotelName = "Plaza";
-        Optional<Hotel> actualResult = session.createQuery("select h from Hotel h " +
-                                                           "where h.name = :name", Hotel.class)
-                .setParameter("name", hotelName)
-                .uniqueResultOptional();
         assertThat(actualResult.isPresent()).isTrue();
         assertThat(actualResult.get().getName()).isEqualTo(hotelName);
         session.getTransaction().commit();

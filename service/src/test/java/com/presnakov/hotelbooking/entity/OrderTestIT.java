@@ -4,6 +4,7 @@ import com.presnakov.hotelbooking.integration.EntityTestBase;
 import com.presnakov.hotelbooking.util.TestDataImporter;
 import lombok.Cleanup;
 import org.hibernate.Session;
+import org.hibernate.query.criteria.JpaJoin;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class OrderTestIT extends EntityTestBase {
 
+    //test with HQL
     @Test
     void findOrderByUserEmail() {
         @Cleanup Session session = sessionFactory.openSession();
@@ -32,6 +34,7 @@ public class OrderTestIT extends EntityTestBase {
         session.getTransaction().commit();
     }
 
+    //test with HQL
     @Test
     void findAllOrdersByHotelName() {
         @Cleanup Session session = sessionFactory.openSession();
@@ -50,6 +53,7 @@ public class OrderTestIT extends EntityTestBase {
         session.getTransaction().commit();
     }
 
+    //test with HQL
     @Test
     void findOrdersByCheckInDate() {
         @Cleanup Session session = sessionFactory.openSession();
@@ -60,6 +64,71 @@ public class OrderTestIT extends EntityTestBase {
         List<Order> results = session.createQuery("select o from Order o " +
                                                   "where o.checkInDate = :checkInDate", Order.class)
                 .setParameter("checkInDate", checkInDate)
+                .list();
+
+        assertThat(results).hasSize(1);
+        session.getTransaction().commit();
+    }
+
+    //test with Criteria
+    @Test
+    void findOrderByUserEmailCriteria() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        var cb = session.getCriteriaBuilder();
+        var criteria = cb.createQuery(Order.class);
+        var order = criteria.from(Order.class);
+        JpaJoin<User, Order> users = order.join("user");
+        String userEmail = "vasya@gmai.com";
+
+        criteria.select(order).where(
+                cb.equal(users.get("email"), userEmail)
+        );
+        List<Order> results = session.createQuery(criteria)
+                .list();
+
+        assertThat(results).hasSize(1);
+        session.getTransaction().commit();
+    }
+
+    //test with Criteria
+    @Test
+    void findAllOrdersByHotelNameCriteria() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        var cb = session.getCriteriaBuilder();
+        var criteria = cb.createQuery(Order.class);
+        var order = criteria.from(Order.class);
+        JpaJoin<Room, Order> room = order.join("room");
+        JpaJoin<Hotel, Room> hotel = room.join("hotel");
+        String hotelName = "Minsk";
+
+        criteria.select(order).where(
+                cb.equal(hotel.get("name"), hotelName)
+        );
+        List<Order> results = session.createQuery(criteria)
+                .list();
+
+        assertThat(results).hasSize(2);
+        session.getTransaction().commit();
+    }
+
+    //test with Criteria
+    @Test
+    void findOrdersByCheckInDateCriteria() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        var cb = session.getCriteriaBuilder();
+        var criteria = cb.createQuery(Order.class);
+        var order = criteria.from(Order.class);
+        LocalDate checkInDate = LocalDate.of(2024, 10, 20);
+
+        criteria.select(order).where(
+                cb.equal(order.get("checkInDate"), checkInDate));
+        List<Order> results = session.createQuery(criteria)
                 .list();
 
         assertThat(results).hasSize(1);

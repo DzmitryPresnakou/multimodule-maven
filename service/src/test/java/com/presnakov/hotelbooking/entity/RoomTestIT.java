@@ -4,6 +4,7 @@ import com.presnakov.hotelbooking.integration.EntityTestBase;
 import com.presnakov.hotelbooking.util.TestDataImporter;
 import lombok.Cleanup;
 import org.hibernate.Session;
+import org.hibernate.query.criteria.JpaJoin;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class RoomTestIT extends EntityTestBase {
 
+    //test with HQL
     @Test
     void findAllByHotelNameClassOccupancyPrice() {
         @Cleanup Session session = sessionFactory.openSession();
@@ -37,6 +39,40 @@ public class RoomTestIT extends EntityTestBase {
                 .list();
 
         assertThat(results).hasSize(1);
+        session.getTransaction().commit();
+    }
+
+    //test with Criteria
+    @Test
+    void findAllByHotelNameClassOccupancyPriceCriteria() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        var cb = session.getCriteriaBuilder();
+        var criteria = cb.createQuery(Room.class);
+        var hotel = criteria.from(Hotel.class);
+        JpaJoin<Hotel, Room> rooms = hotel.join("rooms");
+        String hotelName = "Plaza";
+        Integer occupancy = 2;
+        Integer pricePerDay = 29;
+        RoomClassEnum roomClass = RoomClassEnum.ECONOMY;
+
+        criteria.select(rooms).where(
+                cb.equal(hotel.get("name"), hotelName),
+                cb.equal(rooms.get("occupancy"), occupancy),
+                cb.equal(rooms.get("pricePerDay"), pricePerDay),
+                cb.equal(rooms.get("roomClass"), roomClass)
+        );
+        Optional<Room> actualResult = session.createQuery(criteria)
+                .uniqueResultOptional();
+
+        assertAll(
+                () -> assertThat(actualResult.isPresent()).isTrue(),
+                () -> assertThat(actualResult.get().getHotel().getName().equals(hotelName)),
+                () -> assertThat(actualResult.get().getOccupancy().equals(occupancy)),
+                () -> assertThat(actualResult.get().getPricePerDay().equals(pricePerDay)),
+                () -> assertThat(actualResult.get().getRoomClass().equals(roomClass))
+        );
         session.getTransaction().commit();
     }
 
