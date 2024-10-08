@@ -118,41 +118,11 @@
                     <version>3.3.1</version>
                 </plugin>
                 <plugin>
-                    <groupId>com.querydsl</groupId>
-                    <artifactId>querydsl-maven-plugin</artifactId>
-                    <version>5.0.0</version>
-                    <executions>
-                        <execution>
-                            <phase>process-classes</phase>
-                            <goals>
-                                <goal>jpa-export</goal>
-                            </goals>
-                            <configuration>
-                                <targetFolder>target/generated-sources/java</targetFolder>
-                                <!-- You have to pass your entity package here -->
-                                <packages>
-                                    <package>com.dmdev.querydsl.entity</package>
-                                </packages>
-                            </configuration>
-                        </execution>
-                    </executions>
-                    <!-- querydsl plugin does not contain javax lib for generating jpa model -->
-                    <!--                <dependencies>-->
-                    <!--                    <dependency>-->
-                    <!--                        <groupId>jakarta.persistence</groupId>-->
-                    <!--                        <artifactId>jakarta.persistence-api</artifactId>-->
-                    <!--                        <version>${jakarta.version}</version>-->
-                    <!--                    </dependency>-->
-
-                    <!--                </dependencies>-->
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.13.0</version>
                     <configuration>
                         <source>${maven.compiler.source}</source>
-<!--                        <target>${maven.compiler.target}</target>-->
                         <annotationProcessors>
                             <annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor
                             </annotationProcessor>
@@ -176,11 +146,6 @@
                                 <groupId>org.hibernate.orm</groupId>
                                 <artifactId>hibernate-jpamodelgen</artifactId>
                                 <version>${hibernate.version}</version>
-                            </path>
-                            <path>
-                                <groupId>jakarta.persistence</groupId>
-                                <artifactId>jakarta.persistence-api</artifactId>
-                                <version>${jakarta.version}</version>
                             </path>
                         </annotationProcessorPaths>
                     </configuration>
