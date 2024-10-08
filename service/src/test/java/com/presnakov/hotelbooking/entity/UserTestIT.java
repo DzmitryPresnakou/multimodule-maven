@@ -1,8 +1,9 @@
-package com.presnakov.hotelbooking.integration.entity;
+package com.presnakov.hotelbooking.entity;
 
-import com.presnakov.hotelbooking.entity.RoleEnum;
-import com.presnakov.hotelbooking.entity.User;
-import com.presnakov.hotelbooking.integration.integration.EntityTestBase;
+import com.presnakov.hotelbooking.integration.EntityTestBase;
+import com.presnakov.hotelbooking.util.TestDataImporter;
+import lombok.Cleanup;
+import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -12,6 +13,44 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class UserTestIT extends EntityTestBase {
+
+    //test with HQL
+    @Test
+    void findUserByEmail() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        String userEmail = "vasya@gmai.com";
+
+        Optional<User> result = session.createQuery("select u from User u " +
+                                                    "where u.email = :email", User.class)
+                .setParameter("email", userEmail)
+                .uniqueResultOptional();
+
+        assertThat(result).isPresent();
+        session.getTransaction().commit();
+    }
+
+    //test with Criteria
+    @Test
+    void findUserByEmailCriteria() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        var cb = session.getCriteriaBuilder();
+        var criteria = cb.createQuery(User.class);
+        var user = criteria.from(User.class);
+        String userEmail = "vasya@gmai.com";
+
+        criteria.select(user).where(
+                cb.equal(user.get("email"), userEmail));
+        Optional<User> actualResult = session.createQuery(criteria)
+                .uniqueResultOptional();
+
+        assertThat(actualResult.isPresent()).isTrue();
+        assertThat(actualResult.get().getEmail()).isEqualTo(userEmail);
+        session.getTransaction().commit();
+    }
 
     @Test
     void createUser() {

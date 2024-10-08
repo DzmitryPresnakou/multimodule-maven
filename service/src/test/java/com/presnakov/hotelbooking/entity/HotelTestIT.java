@@ -1,18 +1,97 @@
-package com.presnakov.hotelbooking.integration.entity;
+package com.presnakov.hotelbooking.entity;
 
-import com.presnakov.hotelbooking.entity.Hotel;
-import com.presnakov.hotelbooking.entity.Room;
-import com.presnakov.hotelbooking.entity.RoomClassEnum;
-import com.presnakov.hotelbooking.integration.integration.EntityTestBase;
+import com.presnakov.hotelbooking.integration.EntityTestBase;
+import com.presnakov.hotelbooking.util.TestDataImporter;
+import lombok.Cleanup;
+import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-
 public class HotelTestIT extends EntityTestBase {
+
+    //test with HQL
+    @Test
+    void findAll() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+
+        List<Hotel> results = session.createQuery("select h from Hotel h", Hotel.class)
+                .list();
+        List<String> hotelNames = results.stream()
+                .map(Hotel::getName)
+                .collect(toList());
+
+        assertThat(results).hasSize(2);
+        assertThat(hotelNames).containsExactlyInAnyOrder("Plaza", "Minsk");
+        session.getTransaction().commit();
+    }
+
+    //test with HQL
+    @Test
+    void findByName() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+
+        String hotelName = "Plaza";
+        Optional<Hotel> actualResult = session.createQuery("select h from Hotel h " +
+                                                           "where h.name = :name", Hotel.class)
+                .setParameter("name", hotelName)
+                .uniqueResultOptional();
+        assertThat(actualResult.isPresent()).isTrue();
+        assertThat(actualResult.get().getName()).isEqualTo(hotelName);
+        session.getTransaction().commit();
+    }
+
+    //test with Criteria
+    @Test
+    void findAllCriteria() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        var cb = session.getCriteriaBuilder();
+        var criteria = cb.createQuery(Hotel.class);
+
+        var hotel = criteria.from(Hotel.class);
+        criteria.select(hotel);
+        List<Hotel> results = session.createQuery(criteria)
+                .list();
+        List<String> hotelNames = results.stream()
+                .map(Hotel::getName)
+                .collect(toList());
+
+        assertThat(results).hasSize(2);
+        assertThat(hotelNames).containsExactlyInAnyOrder("Plaza", "Minsk");
+        session.getTransaction().commit();
+    }
+
+    //test with Criteria
+    @Test
+    void findByNameCriteria() {
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        TestDataImporter.importData(session);
+        var cb = session.getCriteriaBuilder();
+        var criteria = cb.createQuery(Hotel.class);
+        String hotelName = "Plaza";
+        var hotel = criteria.from(Hotel.class);
+
+        criteria.select(hotel).where(
+                cb.equal(hotel.get("name"), hotelName));
+        Optional<Hotel> actualResult = session.createQuery(criteria)
+                .uniqueResultOptional();
+
+        assertThat(actualResult.isPresent()).isTrue();
+        assertThat(actualResult.get().getName()).isEqualTo(hotelName);
+        session.getTransaction().commit();
+    }
 
     @Test
     void createHotel() {

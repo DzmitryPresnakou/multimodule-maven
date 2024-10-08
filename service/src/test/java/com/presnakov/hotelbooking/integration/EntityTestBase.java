@@ -1,6 +1,6 @@
-package com.presnakov.hotelbooking.integration.integration;
+package com.presnakov.hotelbooking.integration;
 
-import com.presnakov.hotelbooking.util.HibernateUtil;
+import com.presnakov.hotelbooking.util.HibernateTestUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.AfterAll;
@@ -16,7 +16,7 @@ public abstract class EntityTestBase {
 
     @BeforeAll
     static void createSessionFactory() {
-        sessionFactory = HibernateUtil.buildSessionFactory();
+        sessionFactory = HibernateTestUtil.buildSessionFactory();
     }
 
     @AfterAll
