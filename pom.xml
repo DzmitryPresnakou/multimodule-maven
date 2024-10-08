@@ -19,14 +19,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <lombok.version>1.18.34</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <junit5.version>5.11.0</junit5.version>
         <querydsl.version>5.1.0</querydsl.version>
         <postgresql.version>42.7.4</postgresql.version>
         <postgresql.testcontainers.version>1.20.2</postgresql.testcontainers.version>
         <assertj.version>3.26.3</assertj.version>
         <hibernate.version>6.6.1.Final</hibernate.version>
-        <jakarta.version>3.1.0</jakarta.version>
+        <jakarta.version>3.2.0</jakarta.version>
     </properties>
 
     <dependencyManagement>
@@ -94,6 +94,11 @@
                 <artifactId>junit-jupiter</artifactId>
                 <version>${junit5.version}</version>
             </dependency>
+            <dependency>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
+                <version>${jakarta.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -113,12 +118,41 @@
                     <version>3.3.1</version>
                 </plugin>
                 <plugin>
+                    <groupId>com.querydsl</groupId>
+                    <artifactId>querydsl-maven-plugin</artifactId>
+                    <version>5.0.0</version>
+                    <executions>
+                        <execution>
+                            <phase>process-classes</phase>
+                            <goals>
+                                <goal>jpa-export</goal>
+                            </goals>
+                            <configuration>
+                                <targetFolder>target/generated-sources/java</targetFolder>
+                                <!-- You have to pass your entity package here -->
+                                <packages>
+                                    <package>com.dmdev.querydsl.entity</package>
+                                </packages>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <!-- querydsl plugin does not contain javax lib for generating jpa model -->
+                    <!--                <dependencies>-->
+                    <!--                    <dependency>-->
+                    <!--                        <groupId>jakarta.persistence</groupId>-->
+                    <!--                        <artifactId>jakarta.persistence-api</artifactId>-->
+                    <!--                        <version>${jakarta.version}</version>-->
+                    <!--                    </dependency>-->
+
+                    <!--                </dependencies>-->
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.13.0</version>
                     <configuration>
                         <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
+<!--                        <target>${maven.compiler.target}</target>-->
                         <annotationProcessors>
                             <annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor
                             </annotationProcessor>
@@ -142,6 +176,11 @@
                                 <groupId>org.hibernate.orm</groupId>
                                 <artifactId>hibernate-jpamodelgen</artifactId>
                                 <version>${hibernate.version}</version>
+                            </path>
+                            <path>
+                                <groupId>jakarta.persistence</groupId>
+                                <artifactId>jakarta.persistence-api</artifactId>
+                                <version>${jakarta.version}</version>
                             </path>
                         </annotationProcessorPaths>
                     </configuration>

@@ -18,9 +18,29 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>compile</scope>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
+
+        <!-- This model is used by criteria api -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- querydsl jpa requires 2 dependencies -->
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+            <classifier>jakarta</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <classifier>jakarta</classifier>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -28,14 +48,14 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.hibernate.orm</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>compile</scope>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -43,14 +63,84 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+
+            <plugin>
+                <groupId>com.querydsl</groupId>
+                <artifactId>querydsl-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>jpa-export</goal>
+                        </goals>
+                        <configuration>
+                            <targetFolder>target/generated-sources/java</targetFolder>
+                            <!-- You have to pass your entity package here -->
+                            <packages>
+                                <package>com.dmdev.querydsl.entity</package>
+                            </packages>
+                        </configuration>
+                    </execution>
+                </executions>
+                <!-- querydsl plugin does not contain javax lib for generating jpa model -->
+                <dependencies>
+                    <dependency>
+                        <groupId>jakarta.persistence</groupId>
+                        <artifactId>jakarta.persistence-api</artifactId>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <!--                    <target>${maven.compiler.target}</target>-->
+                    <annotationProcessors>
+                        <annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor
+                        </annotationProcessor>
+                        <annotationProcessor>com.querydsl.apt.jpa.JPAAnnotationProcessor</annotationProcessor>
+                        <annotationProcessor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor
+                        </annotationProcessor>
+                    </annotationProcessors>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </path>
+                        <path>
+                            <groupId>com.querydsl</groupId>
+                            <artifactId>querydsl-apt</artifactId>
+                            <classifier>jakarta</classifier>
+                        </path>
+                        <path>
+                            <groupId>org.hibernate.orm</groupId>
+                            <artifactId>hibernate-jpamodelgen</artifactId>
+                        </path>
+
+                        <path>
+                            <groupId>jakarta.persistence</groupId>
+                            <artifactId>jakarta.persistence-api</artifactId>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
