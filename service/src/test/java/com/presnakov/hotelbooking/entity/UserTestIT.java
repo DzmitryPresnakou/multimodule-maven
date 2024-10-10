@@ -2,8 +2,6 @@ package com.presnakov.hotelbooking.entity;
 
 import com.presnakov.hotelbooking.integration.EntityTestBase;
 import com.presnakov.hotelbooking.util.TestDataImporter;
-import lombok.Cleanup;
-import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -14,11 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class UserTestIT extends EntityTestBase {
 
-    //test with HQL
     @Test
-    void findUserByEmail() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
+    void findUserByEmailHql() {
         TestDataImporter.importData(session);
         String userEmail = "vasya@gmai.com";
 
@@ -28,14 +23,10 @@ public class UserTestIT extends EntityTestBase {
                 .uniqueResultOptional();
 
         assertThat(result).isPresent();
-        session.getTransaction().commit();
     }
 
-    //test with Criteria
     @Test
     void findUserByEmailCriteria() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
         TestDataImporter.importData(session);
         var cb = session.getCriteriaBuilder();
         var criteria = cb.createQuery(User.class);
@@ -49,7 +40,6 @@ public class UserTestIT extends EntityTestBase {
 
         assertThat(actualResult.isPresent()).isTrue();
         assertThat(actualResult.get().getEmail()).isEqualTo(userEmail);
-        session.getTransaction().commit();
     }
 
     @Test

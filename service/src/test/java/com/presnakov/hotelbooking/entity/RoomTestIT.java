@@ -2,8 +2,6 @@ package com.presnakov.hotelbooking.entity;
 
 import com.presnakov.hotelbooking.integration.EntityTestBase;
 import com.presnakov.hotelbooking.util.TestDataImporter;
-import lombok.Cleanup;
-import org.hibernate.Session;
 import org.hibernate.query.criteria.JpaJoin;
 import org.junit.jupiter.api.Test;
 
@@ -15,11 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class RoomTestIT extends EntityTestBase {
 
-    //test with HQL
     @Test
-    void findAllByHotelNameClassOccupancyPrice() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
+    void findAllByHotelNameClassOccupancyPriceHql() {
         TestDataImporter.importData(session);
         String hotelName = "Plaza";
         Integer occupancy = 2;
@@ -39,14 +34,10 @@ public class RoomTestIT extends EntityTestBase {
                 .list();
 
         assertThat(results).hasSize(1);
-        session.getTransaction().commit();
     }
 
-    //test with Criteria
     @Test
     void findAllByHotelNameClassOccupancyPriceCriteria() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
         TestDataImporter.importData(session);
         var cb = session.getCriteriaBuilder();
         var criteria = cb.createQuery(Room.class);
@@ -63,18 +54,48 @@ public class RoomTestIT extends EntityTestBase {
                 cb.equal(rooms.get("pricePerDay"), pricePerDay),
                 cb.equal(rooms.get("roomClass"), roomClass)
         );
-        Optional<Room> actualResult = session.createQuery(criteria)
-                .uniqueResultOptional();
+        List<Room> results = session.createQuery(criteria)
+                .list();
+        Optional<Room> room = results.stream()
+                .filter(r -> r.getHotel().getName().equals(hotelName))
+                .findAny();
 
         assertAll(
-                () -> assertThat(actualResult.isPresent()).isTrue(),
-                () -> assertThat(actualResult.get().getHotel().getName().equals(hotelName)),
-                () -> assertThat(actualResult.get().getOccupancy().equals(occupancy)),
-                () -> assertThat(actualResult.get().getPricePerDay().equals(pricePerDay)),
-                () -> assertThat(actualResult.get().getRoomClass().equals(roomClass))
+                () -> assertThat(results).hasSize(1),
+                () -> assertThat(room.isPresent()).isTrue(),
+                () -> assertThat(room.get().getHotel().getName().equals(hotelName)),
+                () -> assertThat(room.get().getOccupancy().equals(occupancy)),
+                () -> assertThat(room.get().getPricePerDay().equals(pricePerDay)),
+                () -> assertThat(room.get().getRoomClass().equals(roomClass))
         );
-        session.getTransaction().commit();
     }
+
+//    @Test
+//    void findAllByHotelNameClassOccupancyQueryDsl() {
+//        TestDataImporter.importData(session);
+//        String hotelName = "Plaza";
+//        Integer occupancy = 2;
+//        Integer pricePerDay = 29;
+//        RoomClassEnum comfortClass = RoomClassEnum.ECONOMY;
+//
+//        new JPAQuery<Room>(session)
+//                .select(QRoom.user)
+//                        .from()
+
+//        List<Room> results = session.createQuery("select r from Hotel h " +
+//                                                 "join h.rooms r " +
+//                                                 "where h.name = :hotelName " +
+//                                                 "and r.roomClass = :comfortClass " +
+//                                                 "and r.occupancy = :occupancy " +
+//                                                 "and r.pricePerDay = :pricePerDay", Room.class)
+//                .setParameter("hotelName", hotelName)
+//                .setParameter("comfortClass", comfortClass)
+//                .setParameter("occupancy", occupancy)
+//                .setParameter("pricePerDay", pricePerDay)
+//                .list();
+
+//        assertThat(results).hasSize(1);
+//    }
 
     @Test
     void createRoom() {

@@ -94,11 +94,6 @@
                 <artifactId>junit-jupiter</artifactId>
                 <version>${junit5.version}</version>
             </dependency>
-            <dependency>
-                <groupId>jakarta.persistence</groupId>
-                <artifactId>jakarta.persistence-api</artifactId>
-                <version>${jakarta.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

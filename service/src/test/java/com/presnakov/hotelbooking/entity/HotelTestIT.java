@@ -2,8 +2,7 @@ package com.presnakov.hotelbooking.entity;
 
 import com.presnakov.hotelbooking.integration.EntityTestBase;
 import com.presnakov.hotelbooking.util.TestDataImporter;
-import lombok.Cleanup;
-import org.hibernate.Session;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -15,11 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class HotelTestIT extends EntityTestBase {
 
-    //test with HQL
     @Test
-    void findAll() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
+    void findAllHql() {
         TestDataImporter.importData(session);
 
         List<Hotel> results = session.createQuery("select h from Hotel h", Hotel.class)
@@ -30,14 +26,10 @@ public class HotelTestIT extends EntityTestBase {
 
         assertThat(results).hasSize(2);
         assertThat(hotelNames).containsExactlyInAnyOrder("Plaza", "Minsk");
-        session.getTransaction().commit();
     }
 
-    //test with HQL
     @Test
-    void findByName() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
+    void findByNameHql() {
         TestDataImporter.importData(session);
 
         String hotelName = "Plaza";
@@ -47,14 +39,10 @@ public class HotelTestIT extends EntityTestBase {
                 .uniqueResultOptional();
         assertThat(actualResult.isPresent()).isTrue();
         assertThat(actualResult.get().getName()).isEqualTo(hotelName);
-        session.getTransaction().commit();
     }
 
-    //test with Criteria
     @Test
     void findAllCriteria() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
         TestDataImporter.importData(session);
         var cb = session.getCriteriaBuilder();
         var criteria = cb.createQuery(Hotel.class);
@@ -69,14 +57,10 @@ public class HotelTestIT extends EntityTestBase {
 
         assertThat(results).hasSize(2);
         assertThat(hotelNames).containsExactlyInAnyOrder("Plaza", "Minsk");
-        session.getTransaction().commit();
     }
 
-    //test with Criteria
     @Test
     void findByNameCriteria() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
         TestDataImporter.importData(session);
         var cb = session.getCriteriaBuilder();
         var criteria = cb.createQuery(Hotel.class);
@@ -90,7 +74,36 @@ public class HotelTestIT extends EntityTestBase {
 
         assertThat(actualResult.isPresent()).isTrue();
         assertThat(actualResult.get().getName()).isEqualTo(hotelName);
-        session.getTransaction().commit();
+    }
+
+    @Test
+    void findAllQueryDsl() {
+        TestDataImporter.importData(session);
+        List<Hotel> results = new JPAQuery<Hotel>(session)
+                .select(QHotel.hotel)
+                .from(QHotel.hotel)
+                .fetch();
+
+        List<String> hotelNames = results.stream()
+                .map(Hotel::getName)
+                .collect(toList());
+
+        assertThat(results).hasSize(2);
+        assertThat(hotelNames).containsExactlyInAnyOrder("Plaza", "Minsk");
+    }
+
+    @Test
+    void findByNameQueryDsl() {
+        TestDataImporter.importData(session);
+        String hotelName = "Plaza";
+
+        Hotel actualResult = new JPAQuery<Hotel>(session)
+                .select(QHotel.hotel)
+                .from(QHotel.hotel)
+                .where(QHotel.hotel.name.eq(hotelName))
+                .fetchOne();
+
+        assertThat(actualResult.getName()).isEqualTo(hotelName);
     }
 
     @Test

@@ -2,8 +2,6 @@ package com.presnakov.hotelbooking.entity;
 
 import com.presnakov.hotelbooking.integration.EntityTestBase;
 import com.presnakov.hotelbooking.util.TestDataImporter;
-import lombok.Cleanup;
-import org.hibernate.Session;
 import org.hibernate.query.criteria.JpaJoin;
 import org.junit.jupiter.api.Test;
 
@@ -16,11 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class OrderTestIT extends EntityTestBase {
 
-    //test with HQL
     @Test
-    void findOrderByUserEmail() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
+    void findOrderByUserEmailHql() {
         TestDataImporter.importData(session);
         String userEmail = "vasya@gmai.com";
 
@@ -31,14 +26,10 @@ public class OrderTestIT extends EntityTestBase {
                 .list();
 
         assertThat(results).hasSize(1);
-        session.getTransaction().commit();
     }
 
-    //test with HQL
     @Test
-    void findAllOrdersByHotelName() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
+    void findAllOrdersByHotelNameHql() {
         TestDataImporter.importData(session);
         String hotelName = "Minsk";
 
@@ -50,14 +41,10 @@ public class OrderTestIT extends EntityTestBase {
                 .list();
 
         assertThat(results).hasSize(2);
-        session.getTransaction().commit();
     }
 
-    //test with HQL
     @Test
-    void findOrdersByCheckInDate() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
+    void findOrdersByCheckInDateHql() {
         TestDataImporter.importData(session);
         LocalDate checkInDate = LocalDate.of(2024, 10, 20);
 
@@ -67,14 +54,10 @@ public class OrderTestIT extends EntityTestBase {
                 .list();
 
         assertThat(results).hasSize(1);
-        session.getTransaction().commit();
     }
 
-    //test with Criteria
     @Test
     void findOrderByUserEmailCriteria() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
         TestDataImporter.importData(session);
         var cb = session.getCriteriaBuilder();
         var criteria = cb.createQuery(Order.class);
@@ -89,14 +72,10 @@ public class OrderTestIT extends EntityTestBase {
                 .list();
 
         assertThat(results).hasSize(1);
-        session.getTransaction().commit();
     }
 
-    //test with Criteria
     @Test
     void findAllOrdersByHotelNameCriteria() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
         TestDataImporter.importData(session);
         var cb = session.getCriteriaBuilder();
         var criteria = cb.createQuery(Order.class);
@@ -112,14 +91,10 @@ public class OrderTestIT extends EntityTestBase {
                 .list();
 
         assertThat(results).hasSize(2);
-        session.getTransaction().commit();
     }
 
-    //test with Criteria
     @Test
     void findOrdersByCheckInDateCriteria() {
-        @Cleanup Session session = sessionFactory.openSession();
-        session.beginTransaction();
         TestDataImporter.importData(session);
         var cb = session.getCriteriaBuilder();
         var criteria = cb.createQuery(Order.class);
@@ -132,7 +107,6 @@ public class OrderTestIT extends EntityTestBase {
                 .list();
 
         assertThat(results).hasSize(1);
-        session.getTransaction().commit();
     }
 
     @Test
@@ -219,7 +193,6 @@ public class OrderTestIT extends EntityTestBase {
                 .money(2500)
                 .password("12345")
                 .role(RoleEnum.USER)
-//                .isActive(true)
                 .build();
     }
 
